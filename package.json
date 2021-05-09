@@ -2,7 +2,7 @@
   "name": "bookshelf-api",
   "version": "1.0.0",
   "description": "Bookshelf restfulAPI for dicoding submission",
-  "main": "app.js",
+  "main": "./src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,6 +23,7 @@
     "nodemon": "^2.0.7"
   },
   "dependencies": {
-    "@hapi/hapi": "^20.1.2"
+    "@hapi/hapi": "^20.1.2",
+    "nanoid": "^3.1.22"
   }
 }

@@ -1,14 +1,18 @@
+/* eslint-disable no-console */
 const Hapi = require('@hapi/hapi');
-const fs = require('fs');
-const util = require('util');
-
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
+const routes = require('./app/routes/bookRoutes');
 
 const server = Hapi.server({
   port: 3000,
-  host: 'localhost',
+  host: process.env.NODE_ENV !== 'production' ? 'localhost' : '127.0.0.1',
+  routes: {
+    cors: {
+      origin: ['*'],
+    },
+  },
 });
+
+server.route(routes);
 
 const init = async () => {
   await server.start();
