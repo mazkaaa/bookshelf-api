@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+
 const Hapi = require('@hapi/hapi');
 const routes = require('./app/routes/bookRoutes');
 

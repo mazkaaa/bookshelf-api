@@ -1,4 +1,4 @@
-const nanoid = require('nanoid');
+const { nanoid } = require('nanoid');
 
 //  model
 const bookshelf = require('../model/bookModel');
@@ -47,8 +47,7 @@ const addBook = (req, h) => {
       message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
     }).code(400);
   }
-
-  if (bookshelf.filter((book) => book.id === id).length > 0) {
+  if (bookshelf.filter((book) => book.id === id).length >= 0) {
     bookshelf.push(newBook);
     return h.response({
       status: 'success',
@@ -68,14 +67,67 @@ const addBook = (req, h) => {
 const getBooks = (req, h) => {
   const { name, reading, finished } = req.query;
 
-  if (name === undefined && reading === undefined && finished === undefined) {
+  /* if (name === undefined && reading === undefined && finished === undefined) {
     return h.response({
       status: 'success',
       data: {
-        books: [],
+        books: bookshelf.map((book) => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
       },
     }).code(200);
   }
+  */
+
+  if (name !== undefined) {
+    const queryRes = bookshelf.filter((queryKey) => queryKey.name.toLowerCase()
+      .includes(name.toLowerCase()))
+      .map((queryBook) => ({
+        id: queryBook.id,
+        name: queryBook.name,
+        publisher: queryBook.publisher,
+      }));
+
+    return h.response({
+      status: 'success',
+      data: {
+        books: queryRes,
+      },
+    }).code(200);
+  }
+  if (reading) {
+    const queryRes = bookshelf.filter((queryKey) => queryKey.reading === reading)
+      .map((queryBook) => ({
+        id: queryBook.id,
+        name: queryBook.name,
+        publisher: queryBook.publisher,
+      }));
+
+    return h.response({
+      status: 'success',
+      data: {
+        books: queryRes,
+      },
+    }).code(200);
+  }
+  if (finished) {
+    const queryRes = bookshelf.filter((queryKey) => queryKey.finished === finished)
+      .map((queryBook) => ({
+        id: queryBook.id,
+        name: queryBook.name,
+        publisher: queryBook.publisher,
+      }));
+
+    return h.response({
+      status: 'success',
+      data: {
+        books: queryRes,
+      },
+    }).code(200);
+  }
+
   return h.response({
     status: 'success',
     data: {
@@ -90,8 +142,8 @@ const getBooks = (req, h) => {
 
 const getBookId = (req, h) => {
   const { bookIdParam } = req.params;
-  const books = bookshelf.filter((book) => book.id === bookIdParam)[0];
-  if (books === undefined) {
+  const booksQuery = bookshelf.filter((book) => book.id === bookIdParam)[0];
+  if (booksQuery === undefined || !booksQuery) {
     return h.response({
       status: 'fail',
       message: 'Buku tidak ditemukan',
@@ -100,7 +152,7 @@ const getBookId = (req, h) => {
   return h.response({
     status: 'success',
     data: {
-      books,
+      book: booksQuery,
     },
   }).code(200);
 };
